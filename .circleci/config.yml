@@ -1160,6 +1160,233 @@ workflows:
             - test-frontend
           filters: *filter-only-master
 
+  build-master-grabpl:
+    jobs:
+      - build-oss-backend:
+          filters: *filter-only-master
+          variant: armv6
+          name: build-oss-backend-armv6
+          requires:
+            - build-grabpl
+      - build-oss-backend:
+          filters: *filter-only-master
+          variant: armv7
+          name: build-oss-backend-armv7
+          requires:
+            - build-grabpl
+      - build-oss-backend:
+          filters: *filter-only-master
+          variant: armv7-musl
+          name: build-oss-backend-armv7-musl
+          requires:
+            - build-grabpl
+      - build-oss-backend:
+          filters: *filter-only-master
+          variant: arm64
+          name: build-oss-backend-arm64
+          requires:
+            - build-grabpl
+      - build-oss-backend:
+          filters: *filter-only-master
+          variant: arm64-musl
+          name: build-oss-backend-arm64-musl
+          requires:
+            - build-grabpl
+      - build-oss-backend:
+          filters: *filter-only-master
+          variant: osx64
+          name: build-oss-backend-osx64
+          requires:
+            - build-grabpl
+      - build-oss-backend:
+          filters: *filter-only-master
+          variant: win64
+          name: build-oss-backend-win64
+          requires:
+            - build-grabpl
+      - build-oss-backend:
+          filters: *filter-only-master
+          variant: linux-x64
+          name: build-oss-backend-linux-x64
+          requires:
+            - build-grabpl
+      - build-oss-backend:
+          filters: *filter-only-master
+          variant: linux-x64-musl
+          name: build-oss-backend-linux-x64-musl
+          requires:
+            - build-grabpl
+      - build-oss-frontend:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+      - build-enterprise-backend:
+          filters: *filter-only-master
+          variant: armv6
+          name: build-enterprise-backend-armv6
+          requires:
+            - build-grabpl
+      - build-enterprise-backend:
+          filters: *filter-only-master
+          variant: armv7
+          name: build-enterprise-backend-armv7
+          requires:
+            - build-grabpl
+      - build-enterprise-backend:
+          filters: *filter-only-master
+          variant: armv7-musl
+          name: build-enterprise-backend-armv7-musl
+          requires:
+            - build-grabpl
+      - build-enterprise-backend:
+          filters: *filter-only-master
+          variant: arm64
+          name: build-enterprise-backend-arm64
+          requires:
+            - build-grabpl
+      - build-enterprise-backend:
+          filters: *filter-only-master
+          variant: arm64-musl
+          name: build-enterprise-backend-arm64-musl
+          requires:
+            - build-grabpl
+      - build-enterprise-backend:
+          filters: *filter-only-master
+          variant: osx64
+          name: build-enterprise-backend-osx64
+          requires:
+            - build-grabpl
+      - build-enterprise-backend:
+          filters: *filter-only-master
+          variant: win64
+          name: build-enterprise-backend-win64
+          requires:
+            - build-grabpl
+      - build-enterprise-backend:
+          filters: *filter-only-master
+          variant: linux-x64
+          name: build-enterprise-backend-linux-x64
+          requires:
+            - build-grabpl
+      - build-enterprise-backend:
+          filters: *filter-only-master
+          variant: linux-x64-musl
+          name: build-enterprise-backend-linux-x64-musl
+          requires:
+            - build-grabpl
+      - build-enterprise-frontend:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+      - codespell:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+      - lint-go:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+      - shellcheck:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+      - test-backend:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+            - lint-go
+      - test-frontend:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+      - mysql-integration-test:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+      - postgres-integration-test:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+      - package-oss:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+            - build-oss-backend-armv6
+            - build-oss-backend-armv7
+            - build-oss-backend-armv7-musl
+            - build-oss-backend-arm64
+            - build-oss-backend-arm64-musl
+            - build-oss-backend-osx64
+            - build-oss-backend-win64
+            - build-oss-backend-linux-x64
+            - build-oss-backend-linux-x64-musl
+            - build-oss-frontend
+            - test-backend
+            - test-frontend
+            - codespell
+            - shellcheck
+            - mysql-integration-test
+            - postgres-integration-test
+      - package-enterprise:
+          filters: *filter-only-master
+          requires:
+            - build-grabpl
+            - build-enterprise-backend-armv6
+            - build-enterprise-backend-armv7
+            - build-enterprise-backend-armv7-musl
+            - build-enterprise-backend-arm64
+            - build-enterprise-backend-arm64-musl
+            - build-enterprise-backend-osx64
+            - build-enterprise-backend-win64
+            - build-enterprise-backend-linux-x64
+            - build-enterprise-backend-linux-x64-musl
+            - build-enterprise-frontend
+            - test-backend
+            - test-frontend
+            - codespell
+            - shellcheck
+            - mysql-integration-test
+            - postgres-integration-test
+      - build-oss-windows-installer:
+          filters: *filter-only-master
+          requires:
+            - package-oss
+      - release-next-packages:
+          filters: *filter-only-master
+          requires:
+            - test-frontend
+      - publish-oss-master:
+          filters: *filter-only-master
+          requires:
+            - package-oss
+            - build-oss-windows-installer
+      - docker-oss-master:
+          filters: *filter-only-master
+          requires:
+            - package-oss
+            - build-oss-windows-installer
+      - docker-ubuntu-oss-master:
+          filters: *filter-only-master
+          requires:
+            - package-oss
+            - build-oss-windows-installer
+      - publish-enterprise-master:
+          filters: *filter-only-master
+          requires:
+            - package-enterprise
+      - end-to-end-test:
+          filters: *filter-only-master
+          requires:
+            - docker-oss-master
+      - docker-enterprise-master:
+          filters: *filter-only-master
+          requires:
+            - package-enterprise
+      - docker-ubuntu-enterprise-master:
+          filters: *filter-only-master
+          requires:
+            - package-enterprise
+
   release:
     jobs:
       - build-all:
